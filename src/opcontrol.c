@@ -9,6 +9,7 @@
 
 #include "main.h"
 #include "chassis.h"
+#include "math.h"
 #include "arm.h"
 //*
 void homeshoulder(){
@@ -83,6 +84,10 @@ void operatorControl() {
 	int claw;
   int elbowCounts;
   int shoulderCounts;
+  int ShoulderLength;
+  int ElbowLength;
+  ShoulderLength = 22;
+  ElbowLength = 29;
 	while (1) {
     //CONTROLS
 		power = joystickGetAnalog(1, 1);
@@ -146,8 +151,16 @@ void operatorControl() {
     //END CLC
     //STRAIGHT line
     if (joystickGetDigital(1, 7, JOY_UP) == 1){
-
+      printf("elbowwww %d\n", encoderGet(elbowEncoder));
+      printf("shoulderrrr %d\n", encoderGet(shoulderEncoder));
     }
+    if (joystickGetDigital(1, 7, JOY_LEFT) == 1){
+      while(joystickGetDigital(1, 7, JOY_DOWN) == 0){
+      shoulderMove(shoulder);
+      elbowMove((encoderGet(shoulderEncoder)+asin(ShoulderLength*(sin(encoderGet(elbowEncoder)*PI/180))/ElbowLength))-encoderGet(elbowEncoder));
+      }
+    }
+    //END STRAIGHT LINE
 	}
 }
 
@@ -155,5 +168,38 @@ void operatorControl() {
 // printf("UpperLimitSwitchisPressed \n");
 // printf("%d\n", encoderGet(shoulderEncoder));
 // encoderReset(shoulderEncoder);
+/*
+
+int l1
+int l2
+
+int targetX = 0;
+int targetY = 18;
+int targetS :
+int targetE
+int errorS ;
+int errorE ;
+int kPE;
+int kPS;
+int outputE
+int outputS
+double D;
+
+//use targetX and targetY to calculate targetE and targetS
+D = ((targetX)^2 + (targetY)^2 - (l1)^2 - (l2)^2)/2*l1*l2
+targetE = atan2(sqtr(1-D)D )
+targetS = atan2(targetY/targetX) - atan2((L2*sin(targetE))/(L1+cos(targetE)))
+
+targetE = (180/pi)*targetE
+
+ printf("the tagets are x y E and S %d %d %d %d \n" targetX, targetY, targetE, targetS)
+// use targetE and targetS to calculate errorE and errorS using encoder date
+// multiply kPE*errrorE and kPS*errorS to find motor outputs
+//set motor power = to outputs
+
+
+*/
+
+
 // delay(900);
 // }

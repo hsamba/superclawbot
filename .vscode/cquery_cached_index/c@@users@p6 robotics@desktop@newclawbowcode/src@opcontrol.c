@@ -77,8 +77,8 @@ void operatorControl() {
         delay(150);
       }
       encoderReset(elbowEncoder);
-      while((encoderGet(elbowEncoder))<75){
-        elbowMove(100-(encoderGet(elbowEncoder)));
+      while((encoderGet(elbowEncoder))<115){
+        elbowMove(140-(encoderGet(elbowEncoder)));
       }
       encoderReset(elbowEncoder);
       while(joystickGetDigital(1, 8, JOY_DOWN) == 0){

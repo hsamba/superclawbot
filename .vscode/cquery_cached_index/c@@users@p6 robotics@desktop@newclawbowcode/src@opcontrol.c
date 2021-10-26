@@ -28,7 +28,7 @@ void operatorControl() {
   int LShoul;
   int LElb;
   int targetX = 7;
-  int targetY = 0;
+  int targetY = 1;
   int targetS;
   int targetE;
   int errorS;
@@ -63,7 +63,7 @@ void operatorControl() {
       }
       printf("UpperLimitSwitchisPressed \n");
       encoderReset(shoulderEncoder);
-      while((encoderGet(shoulderEncoder))<125){
+      while((encoderGet(shoulderEncoder))<132){
         printf("shoulder encoder %d\n", encoderGet(shoulderEncoder));
         shoulderMove(-165+(encoderGet(shoulderEncoder)));
         delay(150);
@@ -77,13 +77,15 @@ void operatorControl() {
         delay(150);
       }
       encoderReset(elbowEncoder);
-      while((encoderGet(elbowEncoder))<115){
-        elbowMove(140-(encoderGet(elbowEncoder)));
+      while((encoderGet(elbowEncoder))<225){
+        elbowMove(225-(encoderGet(elbowEncoder)));
       }
       encoderReset(elbowEncoder);
       while(joystickGetDigital(1, 8, JOY_DOWN) == 0){
-        shoulderMove(2*(0-encoderGet(shoulderEncoder)));
+        shoulderMove(-2*(0-encoderGet(shoulderEncoder)));
         elbowMove(2*(0-encoderGet(elbowEncoder)));
+        printf("elbow move %d\n", 0-encoderGet(elbowEncoder));
+        printf("shoulder move %d\n", 0-encoderGet(shoulderEncoder));
       }
 		}
     //END HOMING
@@ -104,16 +106,31 @@ void operatorControl() {
     }
     if (joystickGetDigital(1, 7, JOY_LEFT) == 1){
       while(joystickGetDigital(1, 7, JOY_DOWN) == 0){
-        D = ((targetX)^2 + (targetY)^2 - (LShoul)^2 - (LElb)^2)/2*LShoul*LElb;
-        targetE = (180/3.1415)*atan(D*sqrt(1-D));
-        targetS = (180/3.1415)*(atan(targetY/targetX) - atan((LElb*sin(targetE))/(LShoul+cos(targetE))));
+        D = ((targetX)^2 + (targetY)^2 - (LShoul)^2 - (LElb)^2)/(targetY*LShoul*LElb);
+        targetE = (180/3.1415)*atan((sqrt(1-D))/D);
+        targetS = (180/3.1415)*(atan(targetY/targetX) - atan((LElb*sin(targetE))/(LShoul+LElb*cos(targetE))));
         errorE = targetE - encoderGet(elbowEncoder);
         errorS = targetS - encoderGet(shoulderEncoder);
-        elbowMove(4*errorE);
-        shoulderMove(4*errorS);
+        if(joystickGetDigital(1, 7, JOY_LEFT) == 1){
+          printf("Target E %d\n", targetE);
+          printf("error E %d\n", errorE);
+          printf("Target S %d\n", targetS);
+          printf("error S %d\n", errorS);
+        }
+        if(joystickGetDigital(1, 7, JOY_RIGHT) == 1){
+          elbowMove(4*errorE);
+          shoulderMove(-4*errorS);
+          wait(100);
+          shoulderMove(0);
+          elbowMove(0);
+        }
         if(joystickGetDigital(1, 7, JOY_UP) == 1){
           targetX = targetX + 1;
           targetY = targetY + 1;
+        }
+        if(joystickGetDigital(1, 8, JOY_UP) == 1){
+          targetX = 10;
+          targetY = 1;
         }
   //  shoulderMove(shoulder);
   //  elbowMove((encoderGet(shoulderEncoder)+asin(LShoul*(sin(encoderGet(elbowEncoder)*3.1415/180))/LElb))-encoderGet(elbowEncoder));

@@ -116,7 +116,7 @@ void operatorControl() {
         wait(10);
         targetE = (180/3.1415)*atan2((sqrt(1-(D*D))),D);
         wait(10);
-        targetS = -(180/3.1415)*(atan2(targetY, targetX) + atan2((LElb*sin(targetE)), (LShoul+LElb*cos(targetE))));
+        targetS = (180/3.1415)*(atan2(targetY, targetX) + atan2((LElb*sin(3.1415*targetE/180)), (LShoul+LElb*cos(3.1415*targetE/180))));
         wait(10);
         errorE = targetE - encoderGet(elbowEncoder);
         errorS = targetS - encoderGet(shoulderEncoder);
@@ -132,11 +132,11 @@ void operatorControl() {
           wait(100);
           shoulderMove(0);
           elbowMove(0);
-          D = ((targetX*targetX) + (targetY*targetY) - (LShoul*LShoul) - (LElb*LElb))/(2*LShoul*LElb);
+          D = ((targetX*targetX) + (targetY*targetY) - (LShoul*LShoul) - (LElb*LElb))/(targetY*LShoul*LElb);
           wait(10);
           targetE = 2*(180/3.1415)*atan2((sqrt(1-(D*D))),D);
           wait(10);
-          targetS = -(180/3.1415)*(atan2(targetY, targetX) - atan2((LElb*sin(targetE)), (LShoul+LElb*cos(targetE))));
+          targetS = (180/3.1415)*(atan2(targetY, targetX) + atan2((LElb*sin(3.1415*targetE/180)), (LShoul+LElb*cos(3.1415*targetE/180))));
           wait(10);
           errorE = targetE - encoderGet(elbowEncoder);
           errorS = targetS - encoderGet(shoulderEncoder);
@@ -149,11 +149,11 @@ void operatorControl() {
           while(straight < 30){
             targetX = 5 - straight;
             targetY = 0 + straight;
-            D = ((targetX*targetX) + (targetY*targetY) - (LShoul*LShoul) - (LElb*LElb))/(2*LShoul*LElb);
+            D = ((targetX*targetX) + (targetY*targetY) - (LShoul*LShoul) - (LElb*LElb))/(targetY*LShoul*LElb);
             wait(5);
             targetE = 2*(180/3.1415)*atan2((sqrt(1-(D*D))),D);
             wait(5);
-            targetS = -(180/3.1415)*(atan2(targetY, targetX) - atan2((LElb*sin(targetE)), (LShoul+LElb*cos(targetE))));
+            targetS = (180/3.1415)*(atan2(targetY, targetX) + atan2((LElb*sin(3.1415*targetE/180)), (LShoul+LElb*cos(3.1415*targetE/180))));
             wait(5);
             errorE = targetE - encoderGet(elbowEncoder);
             errorS = targetS - encoderGet(shoulderEncoder);
@@ -167,11 +167,11 @@ void operatorControl() {
         if(joystickGetDigital(1, 8, JOY_UP) == 1){
           targetX = -10;
           targetY = -10;
-          D = ((targetX*targetX) + (targetY*targetY) - (LShoul*LShoul) - (LElb*LElb))/(2*LShoul*LElb);
+          D = ((targetX*targetX) + (targetY*targetY) - (LShoul*LShoul) - (LElb*LElb))/(targetY*LShoul*LElb);
           wait(10);
           targetE = 2*(180/3.1415)*atan2((sqrt(1-(D*D))),D);
           wait(10);
-          targetS = -(180/3.1415)*(atan2(targetY, targetX) - atan2((LElb*sin(targetE)), (LShoul+LElb*cos(targetE))));
+          targetS = (180/3.1415)*(atan2(targetY, targetX) + atan2((LElb*sin(3.1415*targetE/180)), (LShoul+LElb*cos(3.1415*targetE/180))));
           wait(10);
           errorE = targetE - encoderGet(elbowEncoder);
           errorS = targetS - encoderGet(shoulderEncoder);

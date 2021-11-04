@@ -27,14 +27,16 @@ void operatorControl() {
   int shoulderCounts;
   int LShoul;
   int LElb;
-  int targetX = 10;
-  int targetY = 1;
+  int targetX;
+  int targetY;
   int targetS;
   int targetE;
   int errorS;
   int errorE;
   int straight;
   double D;
+  targetX = 20;
+  targetY = 1;
   LShoul = 21;
   LElb = 28;
 	while (1) {
@@ -125,6 +127,8 @@ void operatorControl() {
           printf("error E %d\n", errorE);
           printf("Target S %d\n", targetS);
           printf("error S %d\n", errorS);
+          printf("TargetX %d\n", targetX);
+          printf("TargetY %d\n", targetY);
         }
         if(joystickGetDigital(1, 7, JOY_RIGHT) == 1){
           elbowMove(4*errorE);
@@ -142,12 +146,12 @@ void operatorControl() {
           errorS = targetS - encoderGet(shoulderEncoder);
         }
         if(joystickGetDigital(1, 5, JOY_UP) == 1){
-          targetX = 5;
+          targetX = 30;
           targetY = 0;
           straight = 0;
           wait(10);
           while(straight < 30){
-            targetX = 5 - straight;
+            targetX = 30 - straight;
             targetY = 0 + straight;
             D = ((targetX*targetX) + (targetY*targetY) - (LShoul*LShoul) - (LElb*LElb))/(targetY*LShoul*LElb);
             wait(5);
@@ -158,15 +162,28 @@ void operatorControl() {
             errorE = targetE - encoderGet(elbowEncoder);
             errorS = targetS - encoderGet(shoulderEncoder);
             wait(10);
-            elbowMove(4*errorE);
-            shoulderMove(-4*errorS);
-            wait(100);
-            straight += .5;
+            while((errorE > 20 ^ errorE < -20) & (errorS > 20 ^ errorS < -20)){
+              elbowMove(4*errorE);
+              shoulderMove(-4*errorS);
+            }
+            straight += 1;
           }
         }
         if(joystickGetDigital(1, 8, JOY_UP) == 1){
           targetX = -10;
           targetY = -10;
+          D = ((targetX*targetX) + (targetY*targetY) - (LShoul*LShoul) - (LElb*LElb))/(targetY*LShoul*LElb);
+          wait(10);
+          targetE = 2*(180/3.1415)*atan2((sqrt(1-(D*D))),D);
+          wait(10);
+          targetS = (180/3.1415)*(atan2(targetY, targetX) + atan2((LElb*sin(3.1415*targetE/180)), (LShoul+LElb*cos(3.1415*targetE/180))));
+          wait(10);
+          errorE = targetE - encoderGet(elbowEncoder);
+          errorS = targetS - encoderGet(shoulderEncoder);
+        }
+        if(joystickGetDigital(1, 6, JOY_UP) == 1){
+          targetX = 30;
+          targetY = 0;
           D = ((targetX*targetX) + (targetY*targetY) - (LShoul*LShoul) - (LElb*LElb))/(targetY*LShoul*LElb);
           wait(10);
           targetE = 2*(180/3.1415)*atan2((sqrt(1-(D*D))),D);

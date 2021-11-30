@@ -3,19 +3,19 @@
 
 #include "main.h"
 
-void shoulderMove(shoulder) {
+void shoulderMove(int shoulder) {
   motorSet(5, shoulder);
 }
 
-void elbowMove(elbow) {
+void elbowMove(int elbow) {
   motorSet(4, elbow);
 }
 
-void wristSet(wrist) {
+void wristSet(int wrist) {
   motorSet(3, wrist);
 }
 
-void clawSet(claw) {
+void clawSet(int claw) {
   motorSet(2, claw);
 }
 

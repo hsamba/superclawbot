@@ -175,11 +175,28 @@ void operatorControl() {
         targetE = round(theta2 + theta1);
         errorE = round(targetE - encoderGet(elbowEncoder));
         errorS = round(targetS - encoderGet(shoulderEncoder));
-        shoulderMove(-4 * errorS);
-        elbowMove(-4 * errorE);
-        printf("errorE %d\n", errorE);
-        wait(10);
-        printf("errorS %d\n", errorS);
+        while(joystickGetDigital(1, 8, JOY_UP) == 1){
+          shoulderMove(-4 * errorS);
+          elbowMove(-4 * errorE);
+        }
+        while(joystickGetDigital(1, 8, JOY_LEFT) == 1){
+          printf("theta2 %d\n", theta2);
+          wait(5);
+          printf("theta1 %d\n", theta1);
+          wait(5);
+          printf("targetS %d\n", targetS);
+          wait(5);
+          printf("targetE %d\n", targetE);
+          wait(5);
+          printf("ShoulderEnc %d\n", encoderGet(shoulderEncoder));
+          wait(5);
+          printf("ElbowEnc %d\n", encoderGet(elbowEncoder));
+          wait(5);
+          printf("errorE %d\n", errorE);
+          wait(5);
+          printf("errorS %d\n", errorS);
+          wait(5);
+        }
       }
     }
 	}

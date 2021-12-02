@@ -35,12 +35,11 @@ void operatorControl() {
   int theta2;
   int errorS;
   int errorE;
-  int straight;
   double D;
   targetX = 20;
   targetY = 31;
-  LShoul = 21;
-  LElb = 28;
+  LShoul = 26;
+  LElb = 33;
 	while (1) {
     //CONTROLS
 		power = joystickGetAnalog(1, 1);
@@ -94,11 +93,6 @@ void operatorControl() {
       }
 		}
     //END HOMING
-    //PRINT
-  /*  if(joystickGetDigital(1, 8, JOY_DOWN) == 1){
-      printf("shoulder enc %d\n", encoderGet(shoulderEncoder));
-      printf("elbow enc %d\n", encoderGet(elbowEncoder));
-    } */
     //CLC
     if (joystickGetDigital(1, 8, JOY_LEFT) == 1) {
       elbowCounts = encoderGet(elbowEncoder);
@@ -109,21 +103,13 @@ void operatorControl() {
       }
     }
     //END CLC
-    //STRAIGHT line
+    ///* STRAIGHT LINE
     if (joystickGetDigital(1, 7, JOY_UP) == 1){
       printf("elbowwww %d\n", encoderGet(elbowEncoder));
       printf("shoulderrrr %d\n", encoderGet(shoulderEncoder));
     }
     if (joystickGetDigital(1, 7, JOY_LEFT) == 1){
       while(joystickGetDigital(1, 7, JOY_DOWN) == 0){
-      /*  D = ((targetX*targetX) + (targetY*targetY) - (LShoul*LShoul) - (LElb*LElb))/(2*LShoul*LElb);
-        theta2 = 2*(180/3.1415)*atan2((sqrt(1-(D*D))),D);
-        theta1 = (180/3.1415)*(atan2(targetY, targetX) + atan2((LElb*sin(3.1415*targetE/180)), (LShoul+LElb*cos(3.1415*targetE/180))));
-        targetS = theta1;
-        targetE = theta1 - theta2;
-        errorE = round(targetE - encoderGet(elbowEncoder));
-        errorS = round(targetS - encoderGet(shoulderEncoder));
-        */
         shoulderMove(0);
         elbowMove(0);
         if(joystickGetDigital(1, 7, JOY_LEFT) == 1){
@@ -162,19 +148,21 @@ void operatorControl() {
         }
       }
     }
-    //END STRAIGHT LINE
+    //END STRAIGHT LINE*/
     //STRAIGHT LINE TRIAL 2
     if(joystickGetDigital(1, 8, JOY_RIGHT) == 1){
       targetX = 20;
       targetY = 31;
       while(joystickGetDigital(1, 8, JOY_DOWN) == 0){
         D = ((targetX*targetX) + (targetY*targetY) - (LShoul*LShoul) - (LElb*LElb))/(2*LShoul*LElb);
-        theta2 = (180/3.1415)*(atan2(sqrt(1-(D*D)), D));
+        theta2 = (180/3.1415)*(acos(D));
         theta1 = (180/3.1415)*(atan2(targetY, targetX) + atan2(LElb*cos(3.1415*theta2/180), (LShoul + (LElb*cos(3.1415*theta2/180)))));
         targetS = round(theta1);
         targetE = round(theta2 + theta1);
         errorE = round(targetE - encoderGet(elbowEncoder));
         errorS = round(targetS - encoderGet(shoulderEncoder));
+        shoulderMove(0);
+        elbowMove(0);
         while(joystickGetDigital(1, 8, JOY_UP) == 1){
           shoulderMove(-4 * errorS);
           elbowMove(-4 * errorE);
@@ -199,40 +187,6 @@ void operatorControl() {
         }
       }
     }
+    //END STRAIGHT LINE TRIAL 2
 	}
 }
-
-/*
-int l1
-int l2
-
-int targetX = 7;
-int targetY = 0;
-int targetS :
-int targetE
-int errorS ;
-int errorE ;
-int kPE;
-int kPS;
-int outputE
-int outputS
-double D;
-
-//use targetX and targetY to calculate targetE and targetS
-D = ((targetX)^2 + (targetY)^2 - (l1)^2 - (l2)^2)/2*l1*l2
-targetE = (180/3.1415)*atan2(sqtr(1-D)D )
-targetS = (180/3.1415)*(atan2(targetY/targetX) - atan2((L2*sin(targetE))/(L1+cos(targetE))))
-errorE = TargetE - elbowEncoder
-errorS = TargetS - shoulderEncoder
-
- printf("the targets are x y E and S %d %d %d %d \n" targetX, targetY, targetE, targetS)
-// use targetE and targetS to calculate errorE and errorS using encoder date
-// multiply kPE*errorE and kPS*errorS to find motor outputs
-//set motor power = to outputs
-
-
-*/
-
-
-// delay(900);
-// }

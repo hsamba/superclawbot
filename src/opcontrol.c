@@ -53,7 +53,6 @@ void operatorControl() {
 		wristSet(wrist);
 		clawSet(claw);
 		elbowMove(elbow);
-    //END CONTROLS
     //HOMING
 		if (joystickGetDigital(1, 8, JOY_UP) == 1){
       shoulderMove(50);
@@ -92,7 +91,6 @@ void operatorControl() {
         printf("shoulder move %d\n", 0-encoderGet(shoulderEncoder));
       }
 		}
-    //END HOMING
     //CLC
     if (joystickGetDigital(1, 8, JOY_LEFT) == 1) {
       elbowCounts = encoderGet(elbowEncoder);
@@ -102,8 +100,7 @@ void operatorControl() {
         elbowMove(4*(elbowCounts-encoderGet(elbowEncoder)));
       }
     }
-    //END CLC
-    ///* STRAIGHT LINE
+    /* STRAIGHT LINE
     if (joystickGetDigital(1, 7, JOY_UP) == 1){
       printf("elbowwww %d\n", encoderGet(elbowEncoder));
       printf("shoulderrrr %d\n", encoderGet(shoulderEncoder));
@@ -148,24 +145,25 @@ void operatorControl() {
         }
       }
     }
-    //END STRAIGHT LINE*/
+    */
     //STRAIGHT LINE TRIAL 2
     if(joystickGetDigital(1, 8, JOY_RIGHT) == 1){
-      targetX = 20;
+      targetX = -10;
       targetY = 31;
       while(joystickGetDigital(1, 8, JOY_DOWN) == 0){
         D = ((targetX*targetX) + (targetY*targetY) - (LShoul*LShoul) - (LElb*LElb))/(2*LShoul*LElb);
         theta2 = (180/3.1415)*(acos(D));
         theta1 = (180/3.1415)*(atan2(targetY, targetX) + atan2(LElb*cos(3.1415*theta2/180), (LShoul + (LElb*cos(3.1415*theta2/180)))));
         targetS = round(theta1);
-        targetE = round(theta2 + theta1);
+        targetE = round(theta1 - theta2);
         errorE = round(targetE - encoderGet(elbowEncoder));
         errorS = round(targetS - encoderGet(shoulderEncoder));
         shoulderMove(0);
         elbowMove(0);
-        while(joystickGetDigital(1, 8, JOY_UP) == 1){
+        if(joystickGetDigital(1, 8, JOY_UP) == 1){
           shoulderMove(-4 * errorS);
           elbowMove(-4 * errorE);
+          wait(100);
         }
         while(joystickGetDigital(1, 8, JOY_LEFT) == 1){
           printf("theta2 %d\n", theta2);
@@ -185,8 +183,13 @@ void operatorControl() {
           printf("errorS %d\n", errorS);
           wait(5);
         }
+        if(joystickGetDigital(1, 7, JOY_LEFT) == 1){
+          targetX = 30;
+          targetY = 40;
+          wait(10);
+        }
       }
     }
-    //END STRAIGHT LINE TRIAL 2
+    //FOLLOW LINE
 	}
 }

@@ -17,6 +17,8 @@ void operatorControl() {
   shoulderEncoder = encoderInit(SHOULDER_ENCODER_TOP_PORT, SHOULDER_ENCODER_LOWER_PORT, false);
   Encoder elbowEncoder;
   elbowEncoder = encoderInit(ELBOW_ENCODER_TOP_PORT, ELBOW_ENCODER_LOWER_PORT, true);
+  Ultrasonic Sonar;
+  Sonar = ultrasonicInit(3, 2);
 	int power;
 	int turn;
 	int shoulder;
@@ -100,55 +102,9 @@ void operatorControl() {
         elbowMove(4*(elbowCounts-encoderGet(elbowEncoder)));
       }
     }
-    /* STRAIGHT LINE
-    if (joystickGetDigital(1, 7, JOY_UP) == 1){
-      printf("elbowwww %d\n", encoderGet(elbowEncoder));
-      printf("shoulderrrr %d\n", encoderGet(shoulderEncoder));
-    }
-    if (joystickGetDigital(1, 7, JOY_LEFT) == 1){
-      while(joystickGetDigital(1, 7, JOY_DOWN) == 0){
-        shoulderMove(0);
-        elbowMove(0);
-        if(joystickGetDigital(1, 7, JOY_LEFT) == 1){
-          printf("Target E %d\n", targetE);
-          printf("TotE %d\n", targetE + targetS);
-          printf("error E %d\n", errorE);
-          printf("Target S %d\n", targetS);
-          printf("error S %d\n", errorS);
-          printf("TargetX %f\n", targetX);
-          printf("TargetY %f\n", targetY);
-          printf("D %f\n", D);
-          printf("shoulderEnc %d\n", encoderGet(shoulderEncoder));
-          printf("elbowEnc %d\n", encoderGet(elbowEncoder));
-        }
-        while(joystickGetDigital(1, 7, JOY_RIGHT) == 1){
-          D = ((targetX*targetX) + (targetY*targetY) - (LShoul*LShoul) - (LElb*LElb))/(2*LShoul*LElb);
-          targetE = 2*(180/3.1415)*atan2((sqrt(1-(D*D))), D);
-          targetS = (180/3.1415)*(atan2(targetY, targetX) + atan2((LElb*sin(3.1415*targetE/180)), (LShoul+(LElb*cos(3.1415*targetE/180)))));
-          errorE = round((targetE+targetS) - encoderGet(elbowEncoder));
-          errorS = round(targetS - encoderGet(shoulderEncoder));
-          shoulderMove(-4*errorS);
-          elbowMove(4*errorE);
-        }
-        if(joystickGetDigital(1, 5, JOY_UP) == 1){
-          targetX = 29;
-          targetY = 22;
-        }
-        if(joystickGetDigital(1, 5, JOY_DOWN) == 1){
-          targetX = 29;
-          targetY = 40;
-        }
-        if(joystickGetDigital(1, 6, JOY_UP) == 1){
-          targetX = targetX + 1;
-          targetY = targetY + 1;
-          delay(150);
-        }
-      }
-    }
-    */
     //STRAIGHT LINE TRIAL 2
     if(joystickGetDigital(1, 8, JOY_RIGHT) == 1){
-      targetX = -10;
+      targetX = 0;
       targetY = 31;
       while(joystickGetDigital(1, 8, JOY_DOWN) == 0){
         D = ((targetX*targetX) + (targetY*targetY) - (LShoul*LShoul) - (LElb*LElb))/(2*LShoul*LElb);
@@ -158,13 +114,8 @@ void operatorControl() {
         targetE = round(theta1 - theta2);
         errorE = round(targetE - encoderGet(elbowEncoder));
         errorS = round(targetS - encoderGet(shoulderEncoder));
-        shoulderMove(0);
-        elbowMove(0);
-        if(joystickGetDigital(1, 8, JOY_UP) == 1){
-          shoulderMove(-4 * errorS);
-          elbowMove(-4 * errorE);
-          wait(100);
-        }
+        shoulderMove(-4 * errorS);
+        elbowMove(-4 * errorE);
         while(joystickGetDigital(1, 8, JOY_LEFT) == 1){
           printf("theta2 %d\n", theta2);
           wait(5);
@@ -184,8 +135,7 @@ void operatorControl() {
           wait(5);
         }
         if(joystickGetDigital(1, 7, JOY_LEFT) == 1){
-          targetX = 30;
-          targetY = 40;
+          targetX = targetX + 2;
           wait(10);
         }
       }

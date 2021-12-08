@@ -18,7 +18,13 @@ void operatorControl() {
   Encoder elbowEncoder;
   elbowEncoder = encoderInit(ELBOW_ENCODER_TOP_PORT, ELBOW_ENCODER_LOWER_PORT, true);
   Ultrasonic Sonar;
-  Sonar = ultrasonicInit(3, 2);
+  Sonar = ultrasonicInit(1, 2);
+  int LLine = 8;
+  int MLine = 9;
+  int RLine = 10;
+  analogCalibrate(LLine);
+  analogCalibrate(MLine);
+  analogCalibrate(RLine);
 	int power;
 	int turn;
 	int shoulder;
@@ -37,12 +43,14 @@ void operatorControl() {
   int theta2;
   int errorS;
   int errorE;
+  int distance;
+  int lineturn;
   double D;
   targetX = 20;
   targetY = 31;
   LShoul = 26;
   LElb = 33;
-	while (1) {
+	while(1) {
     //CONTROLS
 		power = joystickGetAnalog(1, 1);
 		turn = -joystickGetAnalog(1, 2);
@@ -51,12 +59,12 @@ void operatorControl() {
 		wrist = 100 * (joystickGetDigital(1, 5, JOY_UP) - joystickGetDigital(1, 5, JOY_DOWN));
 		claw = 100 * (joystickGetDigital(1, 6, JOY_UP) - joystickGetDigital(1, 6, JOY_DOWN));
 		chassisSet(power, turn);
-		shoulderMove(shoulder);
+		shoulderMove(-shoulder);
 		wristSet(wrist);
 		clawSet(claw);
-		elbowMove(elbow);
+		elbowMove(-elbow);
     //HOMING
-		if (joystickGetDigital(1, 8, JOY_UP) == 1){
+		if(joystickGetDigital(1, 8, JOY_UP) == 1){
       shoulderMove(50);
       elbowMove(-50);
       delay(1000);
@@ -70,36 +78,36 @@ void operatorControl() {
       encoderReset(shoulderEncoder);
       while((encoderGet(shoulderEncoder))<132){
         printf("shoulder encoder %d\n", encoderGet(shoulderEncoder));
-        shoulderMove(-165+(encoderGet(shoulderEncoder)));
+        shoulderMove(165-(encoderGet(shoulderEncoder)));
         delay(150);
       }
       encoderReset(shoulderEncoder);
-      shoulderMove(encoderGet(shoulderEncoder)-0);
+      shoulderMove(0-encoderGet(shoulderEncoder));
       while(digitalRead(ELBOW_LIMIT_SWITCH) == HIGH){
         elbowMove(-50);
         printf("elbow encoder %d\n", encoderGet(elbowEncoder));
-        shoulderMove(encoderGet(shoulderEncoder)-0);
+        shoulderMove(0-encoderGet(shoulderEncoder));
         delay(150);
       }
       encoderReset(elbowEncoder);
       while((encoderGet(elbowEncoder))>-205){
-        elbowMove(205+(encoderGet(elbowEncoder)));
+        elbowMove(-205-(encoderGet(elbowEncoder)));
       }
       encoderReset(elbowEncoder);
       while(joystickGetDigital(1, 8, JOY_DOWN) == 0){
-        shoulderMove(-2*(0-encoderGet(shoulderEncoder)));
-        elbowMove(-2*(0-encoderGet(elbowEncoder)));
+        shoulderMove(2*(0-encoderGet(shoulderEncoder)));
+        elbowMove(2*(0-encoderGet(elbowEncoder)));
         printf("elbow move %d\n", 0-encoderGet(elbowEncoder));
         printf("shoulder move %d\n", 0-encoderGet(shoulderEncoder));
       }
 		}
     //CLC
-    if (joystickGetDigital(1, 8, JOY_LEFT) == 1) {
+    if(joystickGetDigital(1, 8, JOY_LEFT) == 1) {
       elbowCounts = encoderGet(elbowEncoder);
       shoulderCounts = encoderGet(shoulderEncoder);
-      while(joystickGetDigital(1, 8, JOY_RIGHT) == 0){
-        shoulderMove(-4*(shoulderCounts-encoderGet(shoulderEncoder)));
-        elbowMove(4*(elbowCounts-encoderGet(elbowEncoder)));
+      while(joystickGetDigital(1, 8, JOY_DOWN) == 0){
+        shoulderMove(4*(shoulderCounts-encoderGet(shoulderEncoder)));
+        elbowMove(-4*(elbowCounts-encoderGet(elbowEncoder)));
       }
     }
     //STRAIGHT LINE TRIAL 2
@@ -114,8 +122,8 @@ void operatorControl() {
         targetE = round(theta1 - theta2);
         errorE = round(targetE - encoderGet(elbowEncoder));
         errorS = round(targetS - encoderGet(shoulderEncoder));
-        shoulderMove(-4 * errorS);
-        elbowMove(-4 * errorE);
+        shoulderMove(4 * errorS);
+        elbowMove(4 * errorE);
         while(joystickGetDigital(1, 8, JOY_LEFT) == 1){
           printf("theta2 %d\n", theta2);
           wait(5);
@@ -140,6 +148,28 @@ void operatorControl() {
         }
       }
     }
-    //FOLLOW LINE
+    //FOLLOW USR SENSOR
+    if(joystickGetDigital(1, 7, JOY_LEFT) == 1){
+      while(joystickGetDigital(1, 8, JOY_DOWN) == 0){
+        while(encoderGet(shoulderEncoder) < 125 ^ encoderGet(elbowEncoder) < 0){
+          shoulderMove(125 - encoderGet(shoulderEncoder));
+          elbowMove(0 - encoderGet(elbowEncoder));
+        }
+        distance = ultrasonicGet(Sonar);
+        while(distance < 100){
+          chassisSet(distance, 0);
+        }
+        while(distance > 100){
+          chassisSet(25, -1);
+          wait(6000);
+          chassisSet(30, 1);
+          wait(6000);
+        }
+      }
+    }
+    //FOLLOW LINE SENSOR
+    if(joystickGetDigital(1, 7, JOY_RIGHT) == 1){
+
+    }
 	}
 }

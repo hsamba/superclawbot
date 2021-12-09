@@ -59,14 +59,15 @@ void operatorControl() {
 		wrist = 100 * (joystickGetDigital(1, 5, JOY_UP) - joystickGetDigital(1, 5, JOY_DOWN));
 		claw = 100 * (joystickGetDigital(1, 6, JOY_UP) - joystickGetDigital(1, 6, JOY_DOWN));
 		chassisSet(power, turn);
-		shoulderMove(-shoulder);
+		shoulderMove(shoulder);
 		wristSet(wrist);
 		clawSet(claw);
 		elbowMove(-elbow);
+
     //HOMING
 		if(joystickGetDigital(1, 8, JOY_UP) == 1){
-      shoulderMove(50);
-      elbowMove(-50);
+      shoulderMove(-50);
+      elbowMove(50);
       delay(1000);
       elbowMove(0);
       while(digitalRead(SHOULDER_LIMIT_SWITCH) == HIGH){
@@ -84,7 +85,7 @@ void operatorControl() {
       encoderReset(shoulderEncoder);
       shoulderMove(0-encoderGet(shoulderEncoder));
       while(digitalRead(ELBOW_LIMIT_SWITCH) == HIGH){
-        elbowMove(-50);
+        elbowMove(50);
         printf("elbow encoder %d\n", encoderGet(elbowEncoder));
         shoulderMove(0-encoderGet(shoulderEncoder));
         delay(150);
@@ -168,8 +169,9 @@ void operatorControl() {
       }
     }
     //FOLLOW LINE SENSOR
-    if(joystickGetDigital(1, 7, JOY_RIGHT) == 1){
-
+    while(joystickGetDigital(1, 7, JOY_RIGHT) == 1){
+      shoulderMove(50);
+      elbowMove(50);
     }
 	}
 }

@@ -54,7 +54,7 @@ void operatorControl() {
     //CONTROLS
 		power = joystickGetAnalog(1, 1);
 		turn = -joystickGetAnalog(1, 2);
-		shoulder = joystickGetAnalog(1, 3);
+		shoulder = -joystickGetAnalog(1, 3);
 		elbow = joystickGetAnalog(1, 4);
 		wrist = 100 * (joystickGetDigital(1, 5, JOY_UP) - joystickGetDigital(1, 5, JOY_DOWN));
 		claw = 100 * (joystickGetDigital(1, 6, JOY_UP) - joystickGetDigital(1, 6, JOY_DOWN));
@@ -71,7 +71,8 @@ void operatorControl() {
       delay(1000);
       elbowMove(0);
       while(digitalRead(SHOULDER_LIMIT_SWITCH) == HIGH){
-        shoulderMove(50);
+        shoulderMove(-50);
+        elbowMove(0);
         printf("shoulder Enc %d\n", encoderGet(shoulderEncoder));
         delay(100);
       }
@@ -158,7 +159,7 @@ void operatorControl() {
         }
         distance = ultrasonicGet(Sonar);
         while(distance < 100){
-          chassisSet(distance, 0);
+          chassisSet(-50 + distance, 0);
         }
         while(distance > 100){
           chassisSet(25, -1);

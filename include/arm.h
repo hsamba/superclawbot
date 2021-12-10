@@ -4,7 +4,7 @@
 #include "main.h"
 
 void shoulderMove(int shoulder) {
-  motorSet(5, shoulder);
+  motorSet(5, -shoulder);
 }
 
 void elbowMove(int elbow) {

@@ -8,7 +8,7 @@ void shoulderMove(int shoulder) {
 }
 
 void elbowMove(int elbow) {
-  motorSet(4, elbow);
+  motorSet(4, -elbow);
 }
 
 void wristSet(int wrist) {

@@ -153,18 +153,21 @@ void operatorControl() {
     //FOLLOW USR SENSOR
     if(joystickGetDigital(1, 7, JOY_LEFT) == 1){
       while(joystickGetDigital(1, 8, JOY_DOWN) == 0){
-        while(encoderGet(shoulderEncoder) < 125 ^ encoderGet(elbowEncoder) < 0){
+        while(((encoderGet(shoulderEncoder) > 135) || (encoderGet(shoulderEncoder) < 115)) || (encoderGet(elbowEncoder) < -20 || encoderGet(elbowEncoder) > 20)){
           shoulderMove(125 - encoderGet(shoulderEncoder));
           elbowMove(0 - encoderGet(elbowEncoder));
+          printf("shoulder %d\n", encoderGet(shoulderEncoder));
+          printf("elbow %d\n", encoderGet(elbowEncoder));
+          printf("distance %d\n", ultrasonicGet(Sonar));
         }
         distance = ultrasonicGet(Sonar);
-        while(distance < 100){
+        if(distance < 100){
           chassisSet(-50 + distance, 0);
         }
-        while(distance > 100){
-          chassisSet(25, -1);
+        if(distance > 100){
+          chassisSet(25, -25);
           wait(6000);
-          chassisSet(30, 1);
+          chassisSet(30, 25);
           wait(6000);
         }
       }
